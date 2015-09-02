@@ -32,8 +32,10 @@ var data = []
 for (var i=100; i<1001; i++) {
   var angle = theta(i, 100);
   var rad = radius(8, angle);
-  var size = 1;
-  if (i % 10 === 0) size = 3;
+  var size = 1 + Math.random()*2.5;
+  if (i % 10 === 0) {
+    size = 3.5 + Math.random()*2;
+  }
   data.push(cartesian(rad, angle, size))
 }
 
