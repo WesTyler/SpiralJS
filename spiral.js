@@ -6,15 +6,23 @@ function spiral(type) {
     return 2 * Math.PI / (period) * t;
   }
 
+  function startAngle(t, period){
+    return (theta(t-1, period) + theta(t, period))/2;
+  }
+
+  function endAngle(t, period){
+    return (theta(t+1, period) + theta(t, period))/2;
+  }
+
   function radius(spacing, angle) {
     return spacing * angle;
   }
 
-  function cartesian(radius, angle, size) {
+  function cartesian(radius, angle, size, startAngle, endAngle) {
     var size = size || 1;
     var x = radius * Math.cos(angle);
     var y = radius * Math.sin(angle);
-    return [x, y, size, radius, angle];
+    return [x, y, size, radius, angle, startAngle, endAngle];
   }
 
   var margin = {top: 20, right: 20, bottom: 20, left: 40};
@@ -41,7 +49,7 @@ function spiral(type) {
     if (i % 10 === 0) {
       size = 3.5 + Math.random()*3;
     }
-    data.push(cartesian(rad, angle, size))
+    data.push(cartesian(rad, angle, size, startAngle(i, 100), endAngle(i, 100)))
     data2.push([i, size*100, 2])
   }
 
@@ -59,14 +67,15 @@ function spiral(type) {
       .data(data)
         .enter().append("path")
         .attr("d", d3.svg.arc()
-        .outerRadius(outerRadius)
-        .innerRadius(innerRadius)
-        .startAngle(function(d) { return d; })
-        .endAngle(function(d) { return d + τ / n * 1.1; }))
+        .outerRadius(function(d){return d[3]+3.5})
+        .innerRadius(function(d){return d[3]-3.5})
+        .startAngle(function(d) { return d[5]; })
+        .endAngle(function(d) { return d[6]; }))
+        .attr("opacity", function(d){return d[2]/9})
   }
 }
 
-spiral();
+spiral('arcs');
 
 // --------------------vvv Standard Line Graph vvv---------------------------
 
