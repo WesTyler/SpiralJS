@@ -88,12 +88,10 @@ function spiral(type) {
     svg.selectAll("g").selectAll("path")
         .data(quad(sample(line(data), 8)))
       .enter().append("path")
-        .style("fill", function(d) { return "none"; })
+        .style("fill", function(d) { return "black"; })
         .style("stroke", function(d) { return "black"; })
-        .style("stroke-width", 0.5)
-        // .style("fill", function(d) { return color(d.t); })
-        // .style("stroke", function(d) { return color(d.t); })
-        .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 32); });
+        // .style("opacity", function(d) {return d.t})
+        .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 10); });
 
     // Sample the SVG path string "d" uniformly with the specified precision.
     function sample(d, precision) {
@@ -162,8 +160,8 @@ function spiral(type) {
 }
 
 spiral('points');
-spiral('arcs');
 spiral('paths');
+spiral('arcs');
 
 // --------------------vvv Standard Line Graph vvv---------------------------
 
