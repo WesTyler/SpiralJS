@@ -37,8 +37,6 @@ function spiral(type) {
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
   var data = [];
   var data2 = [];
@@ -56,25 +54,32 @@ function spiral(type) {
   y.domain([-height, height]);
   x.domain([-width, width]);
   if (type === "points") {
-    svg.selectAll("dot")
+    svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      
+    svg.selectAll("g").selectAll("dot")
       .data(data)
         .enter().append("circle")
           .attr("r", function(d) { return d[2]; })
           .attr("cx", function(d) { return x(d[0]); })
           .attr("cy", function(d) { return y(d[1]); });
   } else if (type === "arcs") {
-    svg.selectAll("path")
+    svg.append("g")
+      .attr("transform", "translate(" + (width * 0.5 + margin.left) + "," + (height * 0.5 + margin.top) + ")");
+
+    svg.selectAll("g").selectAll("path")
       .data(data)
         .enter().append("path")
         .attr("d", d3.svg.arc()
-        .outerRadius(function(d){return d[3]+3.5})
-        .innerRadius(function(d){return d[3]-3.5})
+        .outerRadius(function(d){return d[3]+10})
+        .innerRadius(function(d){return d[3]-10})
         .startAngle(function(d) { return d[5]; })
         .endAngle(function(d) { return d[6]; }))
-        .attr("opacity", function(d){return d[2]/9})
+        .attr("opacity", function(d){return d[2]/5})
   }
 }
 
+spiral('points');
 spiral('arcs');
 
 // --------------------vvv Standard Line Graph vvv---------------------------
