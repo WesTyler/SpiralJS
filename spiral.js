@@ -86,7 +86,7 @@ function spiral(type) {
       .attr("transform", "translate(" + (margin.left) + "," + (margin.top) + ")");
 
     svg.selectAll("g").selectAll("path")
-        .data(quad(sample(line(data), 10))) // ***** Need to figure out the proper precision to map data crrectly
+        .data(quad(sample(line(data), 1000, 100))) // ***** Need to figure out the proper precision to map data crrectly
       .enter().append("path")
         .style("fill", function(d) { return "black"; })
         .style("stroke", function(d) { return "black"; })
@@ -94,12 +94,17 @@ function spiral(type) {
         .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 10); });
 
     // Sample the SVG path string "d" uniformly with the specified precision.
-    function sample(d, precision) {
+    function sample(d, numberDataPoints, periodicity) {
       var path = document.createElementNS(d3.ns.prefix.svg, "path");
       path.setAttribute("d", d);
 
-      var n = path.getTotalLength(), t = [0], i = 0, dt = precision;
-      while ((i += dt) < n) t.push(i);
+      var n = path.getTotalLength(), t = [0], i = 1, dt = Math.ceil(i/periodicity);
+      console.log('total length', n)
+      while (dt*i < n) {
+        dt = Math.ceil(i/periodicity)
+        t.push(dt*i);
+        i++;
+      }
       t.push(n);
 
       return t.map(function(t, index) {
@@ -116,7 +121,6 @@ function spiral(type) {
         var a = [points[i - 1], points[i], points[i + 1], points[i + 2]];
         a.t = (points[i].t + points[i + 1].t) / 2;
         a.data = points[i][2];
-        console.log(a)
         return a;
       });
     }
