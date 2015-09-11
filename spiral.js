@@ -107,7 +107,7 @@ function spiral(type, numberOfPoints, period) {
       var lastSample = 0;
       console.log('total length', n)
       while (lastSample + dt < n) {
-        dt = Math.ceil(i/periodicity)*2
+        dt = Math.ceil(i/periodicity)*2;
         t.push(lastSample + dt);
         console.log('dt', dt, 'lastSample + dt*i', lastSample + dt)
         lastSample = lastSample + dt;
@@ -170,66 +170,66 @@ function spiral(type, numberOfPoints, period) {
       var u01d = Math.sqrt(u01x * u01x + u01y * u01y);
       return [u01x / u01d, u01y / u01d];
     }
+  } else if (type === "non-spiral") {
+    // --------------------vvv Standard Line Graph vvv---------------------------
+    var x2 = d3.scale.linear().range([0, width]);
+    var y2 = d3.scale.linear().range([height, 0]);
+    x2.domain(d3.extent(data2, function(d) { return d[0]; }));
+    y2.domain(d3.extent(data2, function(d) { return d[1]; }));
+
+    var xAxis = d3.svg.axis().scale(x2)
+      .orient("bottom").ticks(5);
+
+    var yAxis = d3.svg.axis().scale(y2)
+      .orient("left").ticks(5);
+
+    var line = d3.svg.line()
+      .x(function(d) { return x2(d[0]); })
+      .y(function(d) { return y2(d[1]); });
+
+    var svg2 = d3.select("body")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("tranform", "translate(" + margin.left + "," + margin.top + ")")
+
+        // Add the X Axis
+    svg2.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate("+margin.left+"," + height + ")")
+      .call(xAxis)
+      .append("text")
+        .attr("x", width)
+        .attr("y", -3)
+        .attr("dy", "-.35em")
+        .style("text-anchor", "middle")
+        .text("time");
+
+        // Add the Y Axis
+    svg2.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate("+margin.left+",0)")
+      .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Signal (a.u.)");
+
+    svg2.append("path")
+      .datum(data2)
+      .attr("class", "line")
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke-width", "1")
+      .attr("stroke", "steelblue")
+      .attr("transform", "translate("+margin.left+",0)")
   }
 }
 
 spiral('points');
 spiral('paths');
 spiral('arcs');
-
-// --------------------vvv Standard Line Graph vvv---------------------------
-
-// var x2 = d3.scale.linear().range([0, width]);
-// var y2 = d3.scale.linear().range([height, 0]);
-// x2.domain(d3.extent(data2, function(d) { return d[0]; }));
-// y2.domain(d3.extent(data2, function(d) { return d[1]; }));
-
-// var xAxis = d3.svg.axis().scale(x2)
-//   .orient("bottom").ticks(5);
-
-// var yAxis = d3.svg.axis().scale(y2)
-//   .orient("left").ticks(5);
-
-// var line = d3.svg.line()
-//   .x(function(d) { return x2(d[0]); })
-//   .y(function(d) { return y2(d[1]); });
-
-// var svg2 = d3.select("body")
-//   .append("svg")
-//     .attr("width", width + margin.left + margin.right)
-//     .attr("height", height + margin.top + margin.bottom)
-//   .append("g")
-//     .attr("tranform", "translate(" + margin.left + "," + margin.top + ")")
-
-//     // Add the X Axis
-// svg2.append("g")
-//   .attr("class", "x axis")
-//   .attr("transform", "translate("+margin.left+"," + height + ")")
-//   .call(xAxis)
-//   .append("text")
-//     .attr("x", width)
-//     .attr("y", -3)
-//     .attr("dy", "-.35em")
-//     .style("text-anchor", "middle")
-//     .text("time");
-
-//     // Add the Y Axis
-// svg2.append("g")
-//   .attr("class", "y axis")
-//   .attr("transform", "translate("+margin.left+",0)")
-//   .call(yAxis)
-//   .append("text")
-//     .attr("transform", "rotate(-90)")
-//     .attr("y", 6)
-//     .attr("dy", ".71em")
-//     .style("text-anchor", "end")
-//     .text("Signal (a.u.)");
-
-// svg2.append("path")
-//   .datum(data2)
-//   .attr("class", "line")
-//   .attr("d", line)
-//   .attr("fill", "none")
-//   .attr("stroke-width", "1")
-//   .attr("stroke", "steelblue")
-//   .attr("transform", "translate("+margin.left+",0)")
+spiral('non-spiral');
