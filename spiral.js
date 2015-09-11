@@ -1,5 +1,7 @@
-function spiral(type) { 
+function spiral(type, numberOfPoints, period) { 
   var type = type || "points";
+  var numberOfPoints = numberOfPoints || 1000;
+  var period = period || 100; 
 
   var margin = {top: 20, right: 20, bottom: 20, left: 40};
   var width = 750 - margin.left - margin.right;
@@ -43,15 +45,15 @@ function spiral(type) {
 
   var data = [];
   var data2 = [];
-  for (var i=100; i<1001; i++) {
-    var angle = theta(i, 100);
+  for (var i=period; i<numberOfPoints + 1; i++) {
+    var angle = theta(i, period);
     var rad = radius(8, angle);
-    var size = 1 + Math.random()*2.5;
+    var size = 1 + Math.random()*1.5;
     if (i % 10 === 0) {
-      size = 3.5 + Math.random()*3;
+      size = 5.5 + Math.random()*3;
     }
-    data.push(cartesian(rad, angle, size, startAngle(i, 100), endAngle(i, 100)))
-    data2.push([i, size*100, 2])
+    data.push(cartesian(rad, angle, size, startAngle(i, period), endAngle(i, period)))
+    data2.push([i, size*period, 2])
   }
 
   if (type === "points") {
@@ -86,7 +88,7 @@ function spiral(type) {
       .attr("transform", "translate(" + (margin.left) + "," + (margin.top) + ")");
 
     svg.selectAll("g").selectAll("path")
-        .data(quad(sample(line(data), 1000, 100))) // ***** Need to figure out the proper precision to map data crrectly
+        .data(quad(sample(line(data), numberOfPoints, period))) // ***** Need to figure out the proper precision to map data crrectly
       .enter().append("path")
         .style("fill", function(d) { return "black"; })
         .style("stroke", function(d) { return "black"; })
@@ -98,11 +100,17 @@ function spiral(type) {
       var path = document.createElementNS(d3.ns.prefix.svg, "path");
       path.setAttribute("d", d);
 
-      var n = path.getTotalLength(), t = [0], i = 1, dt = Math.ceil(i/periodicity);
+      var n = path.getTotalLength();
+      var t = [0];
+      var i = 1;
+      var dt = Math.ceil(i/periodicity)*2;
+      var lastSample = 0;
       console.log('total length', n)
-      while (dt*i < n) {
-        dt = Math.ceil(i/periodicity)
-        t.push(dt*i);
+      while (lastSample + dt < n) {
+        dt = Math.ceil(i/periodicity)*2
+        t.push(lastSample + dt);
+        console.log('dt', dt, 'lastSample + dt*i', lastSample + dt)
+        lastSample = lastSample + dt;
         i++;
       }
       t.push(n);
@@ -110,7 +118,6 @@ function spiral(type) {
       return t.map(function(t, index) {
         var p = path.getPointAtLength(t);
         var a = data[index] ? [p.x, p.y, data[index][2]] : [p.x, p.y, 0];
-        a.t = t / n;
         return a;
       });
     }
@@ -119,7 +126,6 @@ function spiral(type) {
     function quad(points) {
       return d3.range(points.length - 1).map(function(i) {
         var a = [points[i - 1], points[i], points[i + 1], points[i + 2]];
-        a.t = (points[i].t + points[i + 1].t) / 2;
         a.data = points[i][2];
         return a;
       });
@@ -151,16 +157,17 @@ function spiral(type) {
 
     // Compute intersection of two infinite lines ab and cd.
     function lineIntersect(a, b, c, d) {
-      var x1 = c[0], x3 = a[0], x21 = d[0] - x1, x43 = b[0] - x3,
-          y1 = c[1], y3 = a[1], y21 = d[1] - y1, y43 = b[1] - y3,
-          ua = (x43 * (y1 - y3) - y43 * (x1 - x3)) / (y43 * x21 - x43 * y21);
+      var x1 = c[0], x3 = a[0], x21 = d[0] - x1, x43 = b[0] - x3;
+      var y1 = c[1], y3 = a[1], y21 = d[1] - y1, y43 = b[1] - y3;
+      var ua = (x43 * (y1 - y3) - y43 * (x1 - x3)) / (y43 * x21 - x43 * y21);
       return [x1 + ua * x21, y1 + ua * y21];
     }
 
     // Compute unit vector perpendicular to p01.
     function perp(p0, p1) {
-      var u01x = p0[1] - p1[1], u01y = p1[0] - p0[0],
-          u01d = Math.sqrt(u01x * u01x + u01y * u01y);
+      var u01x = p0[1] - p1[1];
+      var u01y = p1[0] - p0[0];
+      var u01d = Math.sqrt(u01x * u01x + u01y * u01y);
       return [u01x / u01d, u01y / u01d];
     }
   }
