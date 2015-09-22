@@ -172,15 +172,28 @@ function spiral(type, numberOfPoints, period) {
   } else if (type === "custom-path") {
     var pathWidth = 1;  
     
-    data.forEach(function(datum, t, dataSet){
+    customData.forEach(function(datum, t, dataSet){
       var start = startAngle(t, period);
       var end = endAngle(t, period);
+
       var startInnerRadius = radius(8, start) - pathWidth*0.5;
       var startOuterRadius = radius(8, start) + pathWidth*0.5;
       var endInnerRadius = radius(8, end) - pathWidth*0.5;
       var endOuterRadius = radius(8, end) + pathWidth*0.5;
-      var startPoint = cartesian(startInnerRadius, start);
-      var arcPath = "M" + startPoint[0] + " " + startPoint[1];
+      
+      var ctrlInnerRad = 1; // Use to adjust arc inner radius
+      var ctrlOuterRad = 1; // Use to adjust arc outer radius
+      var innerControlPoint = cartesian(radius(8, theta(t, period)) - pathWidth*0.5 + ctrlInnerRad, theta(t, period));
+      var outerControlPoint = cartesian(radius(8, theta(t, period)) + pathWidth*0.5 + ctrlOuterRad, theta(t, period));
+
+      var startPoint = cartesian(startInnerRadius, start); // Bottom right of arc
+      var point2 = cartesian(startOuterRadius, start); // Top right of arc
+      var point3 = cartesian(endOuterRadius, end); // Top left of arc
+      var point4 = cartesian(endInnerRadius, end); // Bottom left of arc
+      var arcPath = "M" + startPoint[0] + " " + startPoint[1] + "L" + point2[0] + " " + point2[1];
+      arcPath += "Q" + outerControlPoint[0] + " " + outerControlPoint[1] + " " + point3[0] + " " + point3[1];
+      arcPath += "L" + point4[0] + " " + point4[1];
+      arcPath += "Q" + innerControlPoint[0] + " " + innerControlPoint[1] + " " + startPoint[0] + " " + startPoint[1] + "Z";
     });
 
   } else if (type === "non-spiral") {
