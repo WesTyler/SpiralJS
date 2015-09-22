@@ -170,8 +170,14 @@ function spiral(type, numberOfPoints, period) {
       return [u01x / u01d, u01y / u01d];
     }
   } else if (type === "custom-path") {
-    var pathWidth = 1;  
+    var pathWidth = 15;
     
+    var customData = []
+    for (var i = 0; i < numberOfPoints; i++) {
+      var val = i*10 % period === 0 ? Math.random()*10 + 7 : Math.random()*5;
+      customData.push([val]);
+    }
+
     customData.forEach(function(datum, t, dataSet){
       var start = startAngle(t, period);
       var end = endAngle(t, period);
@@ -194,7 +200,18 @@ function spiral(type, numberOfPoints, period) {
       arcPath += "Q" + outerControlPoint[0] + " " + outerControlPoint[1] + " " + point3[0] + " " + point3[1];
       arcPath += "L" + point4[0] + " " + point4[1];
       arcPath += "Q" + innerControlPoint[0] + " " + innerControlPoint[1] + " " + startPoint[0] + " " + startPoint[1] + "Z";
+      datum[1] = arcPath
     });
+
+    svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    svg.selectAll("g").selectAll("path")
+      .data(customData)
+      .enter().append("path")
+        .style("fill", function(d) { return "black"; })
+        .style("stroke", function(d) { return "black"; })
+        .style("opacity", function(d) {return d[0]/10})
+        .attr("d", function(d) { return d[1]});
 
   } else if (type === "non-spiral") {
     // --------------------vvv Standard Line Graph vvv---------------------------
@@ -257,6 +274,6 @@ function spiral(type, numberOfPoints, period) {
 
 spiral('points');
 spiral('custom-path');
-spiral('paths');
+//spiral('paths');
 spiral('arcs');
 spiral('non-spiral');
