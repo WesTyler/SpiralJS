@@ -37,7 +37,6 @@ function spiral(type, numberOfPoints, period) {
     return [xPos, yPos, size, radius, angle, startAngle, endAngle];
   }
 
-
   var svg = d3.select("body")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -170,6 +169,20 @@ function spiral(type, numberOfPoints, period) {
       var u01d = Math.sqrt(u01x * u01x + u01y * u01y);
       return [u01x / u01d, u01y / u01d];
     }
+  } else if (type === "custom-path") {
+    var pathWidth = 1;  
+    
+    data.forEach(function(datum, t, dataSet){
+      var start = startAngle(t, period);
+      var end = endAngle(t, period);
+      var startInnerRadius = radius(8, start) - pathWidth*0.5;
+      var startOuterRadius = radius(8, start) + pathWidth*0.5;
+      var endInnerRadius = radius(8, end) - pathWidth*0.5;
+      var endOuterRadius = radius(8, end) + pathWidth*0.5;
+      var startPoint = cartesian(startInnerRadius, start);
+      var arcPath = "M" + startPoint[0] + " " + startPoint[1];
+    });
+
   } else if (type === "non-spiral") {
     // --------------------vvv Standard Line Graph vvv---------------------------
     var x2 = d3.scale.linear().range([0, width]);
@@ -230,6 +243,7 @@ function spiral(type, numberOfPoints, period) {
 }
 
 spiral('points');
+spiral('custom-path');
 spiral('paths');
 spiral('arcs');
 spiral('non-spiral');
