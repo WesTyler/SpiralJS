@@ -170,6 +170,13 @@ function spiral(type, numberOfPoints, period) {
       return [u01x / u01d, u01y / u01d];
     }
   } else if (type === "custom-path") {
+    // TO-DO: 
+    /*
+      1. Adjust Inner/Outer control points on quadratic bezier to give proper arcs
+        a. Needs to be dynamic depending on length of arc, not a single static value
+      2. Adjust start/end angles to prevent slight overlap between adjacent arcs
+    */
+
     var pathWidth = 15;
     
     var customData = []
