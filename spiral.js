@@ -193,8 +193,8 @@ function spiral(type, numberOfPoints, period) {
       var endInnerRadius = radius(8, end) - pathWidth*0.5;
       var endOuterRadius = radius(8, end) + pathWidth*0.5;
       
-      var ctrlInnerRad = 1; // Use to adjust arc inner radius
-      var ctrlOuterRad = 1; // Use to adjust arc outer radius
+      var ctrlInnerRad = 0.01; // Use to adjust arc inner radius
+      var ctrlOuterRad = 0.01; // Use to adjust arc outer radius
       var innerControlPoint = cartesian(radius(8, theta(t, period)) - pathWidth*0.5 + ctrlInnerRad, theta(t, period));
       var outerControlPoint = cartesian(radius(8, theta(t, period)) + pathWidth*0.5 + ctrlOuterRad, theta(t, period));
 
