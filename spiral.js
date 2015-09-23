@@ -174,7 +174,6 @@ function spiral(type, numberOfPoints, period) {
     /*
       1. Adjust Inner/Outer control points on quadratic bezier to give proper arcs
         a. Needs to be dynamic depending on length of arc, not a single static value
-      2. Adjust start/end angles to prevent slight overlap between adjacent arcs
     */
 
     var pathWidth = 15;
@@ -216,7 +215,6 @@ function spiral(type, numberOfPoints, period) {
       .data(customData)
       .enter().append("path")
         .style("fill", function(d) { return "black"; })
-        .style("stroke", function(d) { return "black"; })
         .style("opacity", function(d) {return d[0]/10})
         .attr("d", function(d) { return d[1]});
 
