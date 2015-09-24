@@ -3,9 +3,10 @@ function spiral(type, numberOfPoints, period) {
   var numberOfPoints = numberOfPoints || 1000;
   var period = period || 100; 
 
-  var margin = {top: 20, right: 20, bottom: 20, left: 40};
+  var margin = {top: 30, right: 30, bottom: 30, left: 30};
   var width = 750 - margin.left - margin.right;
   var height = 500 - margin.top - margin.bottom; 
+  console.log(margin, height, width)
 
   var x = d3.scale.linear().range([0, width]);
   var y = d3.scale.linear().range([height, 0]);
@@ -170,13 +171,7 @@ function spiral(type, numberOfPoints, period) {
       return [u01x / u01d, u01y / u01d];
     }
   } else if (type === "custom-path") {
-    // TO-DO: 
-    /*
-      1. Adjust Inner/Outer control points on quadratic bezier to give proper arcs
-        a. Needs to be dynamic depending on length of arc, not a single static value
-    */
-
-    var pathWidth = 15;
+    var pathWidth = 50;
     
     var customData = []
     for (var i = 0; i < numberOfPoints; i++) {
@@ -212,7 +207,7 @@ function spiral(type, numberOfPoints, period) {
     svg.append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     svg.selectAll("g").selectAll("path")
-      .data(customData)
+      .data(customData.slice(100))
       .enter().append("path")
         .style("fill", function(d) { return "black"; })
         .style("opacity", function(d) {return d[0]/10})
