@@ -44,6 +44,7 @@ function spiral(type, numberOfPoints, period) {
 
   var data = [];
   var data2 = [];
+  var customData = [];
   for (var i=period; i<numberOfPoints + 1; i++) {
     var angle = theta(i, period);
     var rad = radius(8, angle);
@@ -51,8 +52,9 @@ function spiral(type, numberOfPoints, period) {
     if (i % 10 === 0) {
       size = 5.5 + Math.random()*3;
     }
-    data.push(cartesian(rad, angle, size, startAngle(i, period), endAngle(i, period)))
-    data2.push([i, size*period, 2])
+    data.push(cartesian(rad, angle, size, startAngle(i, period), endAngle(i, period)));
+    data2.push([i, size*period, 2]);
+    customData.push([size]);
   }
 
   if (type === "points") {
@@ -104,11 +106,9 @@ function spiral(type, numberOfPoints, period) {
       var i = 1;
       var dt = Math.ceil(i/periodicity)*2;
       var lastSample = 0;
-      console.log('total length', n)
       while (lastSample + dt < n) {
         dt = Math.ceil(i/periodicity)*2;
         t.push(lastSample + dt);
-        console.log('dt', dt, 'lastSample + dt*i', lastSample + dt)
         lastSample = lastSample + dt;
         i++;
       }
@@ -172,12 +172,6 @@ function spiral(type, numberOfPoints, period) {
   } else if (type === "custom-path") {
     var pathWidth = 50;
     
-    var customData = []
-    for (var i = 0; i < numberOfPoints; i++) {
-      var val = i*10 % period === 0 ? Math.random()*10 + 7 : Math.random()*5;
-      customData.push([val]);
-    }
-
     customData.forEach(function(datum, t, dataSet){
       var start = startAngle(t, period);
       var end = endAngle(t, period);
@@ -209,7 +203,7 @@ function spiral(type, numberOfPoints, period) {
       .data(customData.slice(100))
       .enter().append("path")
         .style("fill", function(d) { return "black"; })
-        .style("opacity", function(d) {return d[0]/10})
+        .style("opacity", function(d) {return d[0]/9})
         .attr("d", function(d) { return d[1]});
   } else if (type === "non-spiral") {
     // --------------------vvv Standard Line Graph vvv---------------------------
@@ -265,6 +259,6 @@ function spiral(type, numberOfPoints, period) {
 
 spiral('points');
 spiral('custom-path');
-spiral('paths');
-spiral('arcs');
+//spiral('paths');
+//spiral('arcs');
 spiral('non-spiral');
