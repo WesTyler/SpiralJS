@@ -6,12 +6,11 @@ function spiral(type, numberOfPoints, period) {
   var margin = {top: 30, right: 30, bottom: 30, left: 30};
   var width = 750 - margin.left - margin.right;
   var height = 500 - margin.top - margin.bottom; 
-  console.log(margin, height, width)
 
   var x = d3.scale.linear().range([0, width]);
   var y = d3.scale.linear().range([height, 0]);
-  y.domain([-height, height]);
-  x.domain([-width, width]);
+  y.domain([-height-margin.bottom, height+margin.top]);
+  x.domain([-width-margin.left, width+margin.right]);
 
   // For time point #t, calculate the angle to the center of the arc
   // period is the number of time points per revolution (2 PI)
@@ -212,7 +211,6 @@ function spiral(type, numberOfPoints, period) {
         .style("fill", function(d) { return "black"; })
         .style("opacity", function(d) {return d[0]/10})
         .attr("d", function(d) { return d[1]});
-
   } else if (type === "non-spiral") {
     // --------------------vvv Standard Line Graph vvv---------------------------
     var x2 = d3.scale.linear().range([0, width]);
@@ -230,15 +228,8 @@ function spiral(type, numberOfPoints, period) {
       .x(function(d) { return x2(d[0]); })
       .y(function(d) { return y2(d[1]); });
 
-    var svg2 = d3.select("body")
-      .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("tranform", "translate(" + margin.left + "," + margin.top + ")")
-
-        // Add the X Axis
-    svg2.append("g")
+    // Add the X Axis
+    svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate("+margin.left+"," + height + ")")
       .call(xAxis)
@@ -249,8 +240,8 @@ function spiral(type, numberOfPoints, period) {
         .style("text-anchor", "middle")
         .text("time");
 
-        // Add the Y Axis
-    svg2.append("g")
+    // Add the Y Axis
+    svg.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate("+margin.left+",0)")
       .call(yAxis)
@@ -261,7 +252,7 @@ function spiral(type, numberOfPoints, period) {
         .style("text-anchor", "end")
         .text("Signal (a.u.)");
 
-    svg2.append("path")
+    svg.append("path")
       .datum(data2)
       .attr("class", "line")
       .attr("d", line)
@@ -274,6 +265,6 @@ function spiral(type, numberOfPoints, period) {
 
 spiral('points');
 spiral('custom-path');
-//spiral('paths');
+spiral('paths');
 spiral('arcs');
 spiral('non-spiral');
