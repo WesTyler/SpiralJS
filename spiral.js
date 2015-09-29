@@ -1,33 +1,29 @@
 function Spiral(graphType) { 
   this.graphType = graphType || "points";
-}
-
-Spiral.prototype = {
-  numberOfPoints: null,
-  period: null, 
-  margin: {
+  this.numberOfPoints = null,
+  this.period = null, 
+  this.margin = {
     top: 0,
     right: 0,
     bottom: 0,
     left: 0
   },
-  svgHeight: 0,
-  svgWidth: 0,
-  spacing: 1,
-  targetElement: "body",
-  width: 730,
-  height: 480,
-  data: [],
-  x: d3.scale.linear().range([0, 730]).domain([-740, 740]),
-  y: d3.scale.linear().range([480, 0]).domain([-490, 490]),
-  cartesian: function(radius, angle, size, startAngle, endAngle) {
+  this.svgHeight = 0,
+  this.svgWidth = 0,
+  this.spacing = 1,
+  this.targetElement = "body",
+  this.width = 730,
+  this.height = 480,
+  this.data = [],
+  this.x = d3.scale.linear().range([0, 730]).domain([-740, 740]),
+  this.y = d3.scale.linear().range([480, 0]).domain([-490, 490]),
+  this.cartesian = function(radius, angle, size, startAngle, endAngle) {
     var size = size || 1;
     var xPos = this.x(radius * Math.cos(angle));
     var yPos = this.y(radius * Math.sin(angle));
-    console.log(xPos)
     return [xPos, yPos, size, radius, angle, startAngle, endAngle];
   },
-  render: function() {
+  this.render = function() {
     // this.y.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
     // this.x.domain([-this.width-this.margin.left, this.width+this.margin.right]);
 
@@ -235,8 +231,7 @@ Spiral.prototype = {
         .attr("transform", "translate("+this.margin.left+",0)")
     }
   },
-  randomData: function() {
-    console.log('generating', this.numberOfPoints, 'data')
+  this.randomData = function() {
     for (var i=0; i<this.numberOfPoints; i++){
       var angle = theta(i, this.period);
       var rad = radius(this.spacing, angle);
@@ -283,6 +278,9 @@ spiral1.spacing = 8;
 spiral1.randomData();
 spiral1.render();
 
+var spiral2 = new Spiral('non-spiral')
+console.log('spiral1', spiral1.data)
+console.log('spiral2', spiral2.data)
 // spiral('points');
 // spiral('custom-path');
 //spiral('paths');
