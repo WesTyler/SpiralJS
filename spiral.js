@@ -182,10 +182,10 @@ function Spiral(graphType) {
           .attr("d", function(d) { return d[1]});
     } else if (this.graphType === "non-spiral") {
       // --------------------vvv Standard Line Graph vvv---------------------------
-      var x2 = d3.scale.linear().range([0, width]);
-      var y2 = d3.scale.linear().range([height, 0]);
-      x2.domain(d3.extent(data2, function(d) { return d[0]; }));
-      y2.domain(d3.extent(data2, function(d) { return d[1]; }));
+      var x2 = d3.scale.linear().range([0, 730]);
+      var y2 = d3.scale.linear().range([480, 0]);
+      x2.domain(d3.extent(this.data, function(d) { return d[0]; }));
+      y2.domain(d3.extent(this.data, function(d) { return d[1]; }));
 
       var xAxis = d3.svg.axis().scale(x2)
         .orient("bottom").ticks(5);
@@ -200,10 +200,10 @@ function Spiral(graphType) {
       // Add the X Axis
       svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate("+this.margin.left+"," + this.height + ")")
+        .attr("transform", "translate("+this.margin.left+"," + 480 + ")")
         .call(xAxis)
         .append("text")
-          .attr("x", this.width)
+          .attr("x", 710)
           .attr("y", -3)
           .attr("dy", "-.35em")
           .style("text-anchor", "middle")
@@ -222,7 +222,7 @@ function Spiral(graphType) {
           .text("Signal (a.u.)");
 
       svg.append("path")
-        .datum(data2)
+        .datum(this.data)
         .attr("class", "line")
         .attr("d", line)
         .attr("fill", "none")
@@ -239,7 +239,12 @@ function Spiral(graphType) {
       if (i % 10 === 0) {
         size = 5.5 + Math.random()*3;
       }
-      this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
+
+      if (this.graphType === 'points') {
+        this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
+      } else if (this.graphType === 'non-spiral') {
+        this.data.push([i, size*this.period, 2])
+      }
     }
   }
 }
@@ -279,6 +284,19 @@ spiral1.randomData();
 spiral1.render();
 
 var spiral2 = new Spiral('non-spiral')
+spiral2.numberOfPoints = 1000;
+spiral2.period = 100;
+spiral2.margin = {
+  top: 10,
+  right: 10,
+  bottom: 10,
+  left: 10
+};
+spiral2.svgHeight = 500;
+spiral2.svgWidth = 750;
+spiral2.spacing = 8;
+spiral2.randomData();
+spiral2.render();
 console.log('spiral1', spiral1.data)
 console.log('spiral2', spiral2.data)
 // spiral('points');
