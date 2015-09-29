@@ -3,10 +3,10 @@ function Spiral(graphType) {
   this.numberOfPoints = null,
   this.period = null, 
   this.margin = {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0
+    top: 10,
+    right: 10,
+    bottom: 10,
+    left: 10
   },
   this.svgHeight = 0,
   this.svgWidth = 0,
@@ -271,12 +271,6 @@ function radius(spacing, angle) {
 var spiral1 = new Spiral('points');
 spiral1.numberOfPoints = 1000;
 spiral1.period = 100;
-spiral1.margin = {
-  top: 10,
-  right: 10,
-  bottom: 10,
-  left: 10
-};
 spiral1.svgHeight = 500;
 spiral1.svgWidth = 750;
 spiral1.spacing = 8;
@@ -286,21 +280,12 @@ spiral1.render();
 var spiral2 = new Spiral('non-spiral')
 spiral2.numberOfPoints = 1000;
 spiral2.period = 100;
-spiral2.margin = {
-  top: 10,
-  right: 10,
-  bottom: 10,
-  left: 10
-};
 spiral2.svgHeight = 500;
 spiral2.svgWidth = 750;
 spiral2.spacing = 8;
 spiral2.randomData();
 spiral2.render();
-console.log('spiral1', spiral1.data)
-console.log('spiral2', spiral2.data)
-// spiral('points');
+
 // spiral('custom-path');
 //spiral('paths');
 //spiral('arcs');
-// spiral('non-spiral');
