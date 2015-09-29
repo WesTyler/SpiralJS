@@ -12,8 +12,8 @@ function Spiral(graphType) {
   this.svgWidth = 0,
   this.spacing = 1,
   this.targetElement = "body",
-  this.width = 730,
-  this.height = 480,
+  this.width = this.svgWidth - this.margin.left - this.margin.right,
+  this.height = this.svgHeight - this.margin.top - this.margin.bottom,
   this.data = [],
   this.x = d3.scale.linear().range([0, 730]).domain([-740, 740]),
   this.y = d3.scale.linear().range([480, 0]).domain([-490, 490]),
@@ -267,10 +267,10 @@ var spiral1 = new Spiral('points');
 spiral1.numberOfPoints = 1000;
 spiral1.period = 100;
 spiral1.margin = {
-  top: 20,
-  right: 20,
-  bottom: 20,
-  left: 20
+  top: 10,
+  right: 10,
+  bottom: 10,
+  left: 10
 };
 spiral1.svgHeight = 500;
 spiral1.svgWidth = 750;
