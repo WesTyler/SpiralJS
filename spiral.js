@@ -143,39 +143,41 @@ function Spiral(graphType) {
       }
     } else if (this.graphType === "custom-path") {
       var pathWidth = 50;
+      var spiralContext = this;
       
-      customData.forEach(function(datum, t, dataSet){
-        var start = startAngle(t, this.period);
-        var end = endAngle(t, this.period);
+      this.data.forEach(function(datum, t, dataSet){
+        var start = startAngle(t, spiralContext.period);
+        var end = endAngle(t, spiralContext.period);
 
-        var startInnerRadius = radius(this.spacing, start) - pathWidth*0.5;
-        var startOuterRadius = radius(this.spacing, start) + pathWidth*0.5;
-        var endInnerRadius = radius(this.spacing, end) - pathWidth*0.5;
-        var endOuterRadius = radius(this.spacing, end) + pathWidth*0.5;
+        var startInnerRadius = radius(spiralContext.spacing, start) - pathWidth*0.5;
+        var startOuterRadius = radius(spiralContext.spacing, start) + pathWidth*0.5;
+        var endInnerRadius = radius(spiralContext.spacing, end) - pathWidth*0.5;
+        var endOuterRadius = radius(spiralContext.spacing, end) + pathWidth*0.5;
         
         var ctrlInnerRad = 0.01; // Use to adjust arc inner radius
         var ctrlOuterRad = 0.01; // Use to adjust arc outer radius
-        var innerControlPoint = cartesian(radius(this.spacing, theta(t, this.period)) - pathWidth*0.5 + ctrlInnerRad, theta(t, this.period));
-        var outerControlPoint = cartesian(radius(this.spacing, theta(t, this.period)) + pathWidth*0.5 + ctrlOuterRad, theta(t, this.period));
+        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) - pathWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.period));
+        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) + pathWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.period));
 
-        var startPoint = cartesian(startInnerRadius, start); // Bottom right of arc
-        var point2 = cartesian(startOuterRadius, start); // Top right of arc
-        var point3 = cartesian(endOuterRadius, end); // Top left of arc
-        var point4 = cartesian(endInnerRadius, end); // Bottom left of arc
+        var startPoint = spiralContext.cartesian(startInnerRadius, start); // Bottom right of arc
+        var point2 = spiralContext.cartesian(startOuterRadius, start); // Top right of arc
+        var point3 = spiralContext.cartesian(endOuterRadius, end); // Top left of arc
+        var point4 = spiralContext.cartesian(endInnerRadius, end); // Bottom left of arc
         var arcPath = "M" + startPoint[0] + " " + startPoint[1] + "L" + point2[0] + " " + point2[1];
         arcPath += "Q" + outerControlPoint[0] + " " + outerControlPoint[1] + " " + point3[0] + " " + point3[1];
         arcPath += "L" + point4[0] + " " + point4[1];
         arcPath += "Q" + innerControlPoint[0] + " " + innerControlPoint[1] + " " + startPoint[0] + " " + startPoint[1] + "Z";
         datum[1] = arcPath
+        console.log(datum)
       });
 
       svg.append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+        .attr("transform", "translate(" + spiralContext.margin.left + "," + spiralContext.margin.top + ")");
       svg.selectAll("g").selectAll("path")
-        .data(customData.slice(100))
+        .data(spiralContext.data.slice(100))
         .enter().append("path")
           .style("fill", function(d) { return "black"; })
-          .style("opacity", function(d) {return d[0]/9})
+          .style("opacity", function(d) {return d[2]/9})
           .attr("d", function(d) { return d[1]});
     } else if (this.graphType === "non-spiral") {
       // --------------------vvv Standard Line Graph vvv---------------------------
@@ -237,7 +239,7 @@ function Spiral(graphType) {
         size = 5.5 + Math.random()*3;
       }
 
-      if (this.graphType === 'points') {
+      if (this.graphType === 'points' || this.graphType === "custom-path") {
         this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
       } else if (this.graphType === 'non-spiral') {
         this.data.push([i, size*this.period, 2])
@@ -274,7 +276,7 @@ spiral1.spacing = 8;
 spiral1.randomData();
 spiral1.render();
 
-var spiral2 = new Spiral('non-spiral')
+var spiral2 = new Spiral('custom-path')
 spiral2.numberOfPoints = 1000;
 spiral2.period = 100;
 spiral2.svgHeight = 500;
