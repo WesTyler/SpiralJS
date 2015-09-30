@@ -40,15 +40,16 @@ function Spiral(graphType) {
             .attr("cx", function(d) { return d[0]; })
             .attr("cy", function(d) { return d[1]; });
     } else if (this.graphType === "arcs") {
+      var spiralContext = this;
       svg.append("g")
-        .attr("transform", "translate(" + (this.width * 0.5 + this.margin.left) + "," + (this.height * 0.5 + this.margin.top) + ")");
-
+        .attr("transform", "translate(" + (spiralContext.width * 0.5 + spiralContext.margin.left) + "," + (spiralContext.height * 0.5 + spiralContext.margin.top) + ")");
+      console.log(spiralContext)
       svg.selectAll("g").selectAll("path")
-        .data(this.data)
+        .data(spiralContext.data)
           .enter().append("path")
           .attr("d", d3.svg.arc()
-          .outerRadius(function(d){return y(d[3]+10)})
-          .innerRadius(function(d){return y(d[3]-10)})
+          .outerRadius(function(d){return spiralContext.y(d[3]+10)})
+          .innerRadius(function(d){return spiralContext.y(d[3]-10)})
           .startAngle(function(d) { return d[5] > 0 ? d[5] : 0; })
           .endAngle(function(d) { return d[6]; }))
           .attr("opacity", function(d){return d[2]/5})
@@ -230,7 +231,7 @@ function Spiral(graphType) {
         .attr("transform", "translate("+this.margin.left+",0)")
     }
   },
-  this.randomData = function() {
+  this.randomData = function(){
     for (var i=0; i<this.numberOfPoints; i++){
       var angle = theta(i, this.period);
       var rad = radius(this.spacing, angle);
@@ -244,6 +245,13 @@ function Spiral(graphType) {
       } else {
         this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
       }
+    }
+  },
+  this.setParam = function(param, value){
+    this[param] = value;
+    if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', , 'margin.left'].indexOf(param) > -1) {
+      this.width = this.svgWidth - this.margin.left - this.margin.right;
+      this.height = this.svgHeight - this.margin.top - this.margin.bottom;
     }
   }
 }
@@ -277,11 +285,11 @@ spiral1.randomData();
 spiral1.render();
 
 var spiral2 = new Spiral('arcs')
-spiral2.numberOfPoints = 1000;
-spiral2.period = 100;
-spiral2.svgHeight = 500;
-spiral2.svgWidth = 750;
-spiral2.spacing = 8;
+spiral2.setParam('numberOfPoints', 1000);
+spiral2.setParam('period', 100);
+spiral2.setParam('svgHeight', 500);
+spiral2.setParam('svgWidth', 750);
+spiral2.setParam('spacing', 8);
 spiral2.randomData();
 spiral2.render();
 
