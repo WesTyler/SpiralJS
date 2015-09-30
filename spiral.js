@@ -239,10 +239,10 @@ function Spiral(graphType) {
         size = 5.5 + Math.random()*3;
       }
 
-      if (this.graphType === 'points' || this.graphType === "custom-path") {
-        this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
-      } else if (this.graphType === 'non-spiral') {
+      if (this.graphType === 'non-spiral') {
         this.data.push([i, size*this.period, 2])
+      } else {
+        this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
       }
     }
   }
@@ -276,7 +276,7 @@ spiral1.spacing = 8;
 spiral1.randomData();
 spiral1.render();
 
-var spiral2 = new Spiral('custom-path')
+var spiral2 = new Spiral('arcs')
 spiral2.numberOfPoints = 1000;
 spiral2.period = 100;
 spiral2.svgHeight = 500;
