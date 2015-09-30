@@ -15,8 +15,8 @@ function Spiral(graphType) {
   this.width = this.svgWidth - this.margin.left - this.margin.right,
   this.height = this.svgHeight - this.margin.top - this.margin.bottom,
   this.data = [],
-  this.x = d3.scale.linear().range([0, 730]).domain([-740, 740]),
-  this.y = d3.scale.linear().range([480, 0]).domain([-490, 490]),
+  this.x = d3.scale.linear().range([0, 730]).domain([-740, 740]), // TODO : x.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
+  this.y = d3.scale.linear().range([480, 0]).domain([-490, 490]), // TODO : y.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
   this.cartesian = function(radius, angle, size, startAngle, endAngle) {
     var size = size || 1;
     var xPos = this.x(radius * Math.cos(angle));
@@ -24,9 +24,6 @@ function Spiral(graphType) {
     return [xPos, yPos, size, radius, angle, startAngle, endAngle];
   },
   this.render = function() {
-    // this.y.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
-    // this.x.domain([-this.width-this.margin.left, this.width+this.margin.right]);
-
     var svg = d3.select(this.targetElement)
       .append("svg")
       .attr("width", this.svgWidth)
