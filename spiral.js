@@ -11,12 +11,13 @@ function Spiral(graphType) {
   this.svgHeight = 0,
   this.svgWidth = 0,
   this.spacing = 1,
+
   this.targetElement = '#chart',
   this.width = this.svgWidth - this.margin.left - this.margin.right,
   this.height = this.svgHeight - this.margin.top - this.margin.bottom,
   this.data = [],
-  this.x = d3.scale.linear().range([0, 730]).domain([-750, 750]), // TODO : x.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
-  this.y = d3.scale.linear().range([480, 0]).domain([-500, 500]), // TODO : y.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
+  this.x = d3.scale.linear().range([0, 730]).domain([-750, 750]),
+  this.y = d3.scale.linear().range([480, 0]).domain([-500, 500]),
   this.cartesian = function(radius, angle, size, startAngle, endAngle) {
     var size = size || 1;
     var xPos = this.x(radius * Math.cos(angle));
@@ -24,23 +25,24 @@ function Spiral(graphType) {
     return [xPos, yPos, size, radius, angle, startAngle, endAngle];
   },
   this.render = function() {
-    var svg = d3.select(this.targetElement)
-      .append("svg")
-      .attr("width", this.svgWidth)
-      .attr("height", this.svgHeight)
+    var spiralContext = this;
 
-    if (this.graphType === "points") {
+    var svg = d3.select(spiralContext.targetElement)
+      .append("svg")
+      .attr("width", spiralContext.svgWidth)
+      .attr("height", spiralContext.svgHeight)
+
+    if (spiralContext.graphType === "points") {
       svg.append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+        .attr("transform", "translate(" + spiralContext.margin.left + "," + spiralContext.margin.top + ")");
         
       svg.selectAll("g").selectAll("dot")
-        .data(this.data)
+        .data(spiralContext.data)
           .enter().append("circle")
             .attr("r", function(d) { return d[2]; })
             .attr("cx", function(d) { return d[0]; })
             .attr("cy", function(d) { return d[1]; });
-    } else if (this.graphType === "arcs") {
-      var spiralContext = this;
+    } else if (spiralContext.graphType === "arcs") {
       svg.append("g")
         .attr("transform", "translate(" + (spiralContext.width * 0.5 + spiralContext.margin.left) + "," + (spiralContext.height * 0.5 + spiralContext.margin.top) + ")");
       svg.selectAll("g").selectAll("path")
@@ -52,16 +54,16 @@ function Spiral(graphType) {
           .startAngle(function(d) { return d[5] > 0 ? d[5] : 0; })
           .endAngle(function(d) { return d[6]; }))
           .attr("opacity", function(d){return d[2]/5})
-    } else if (this.graphType === "paths") {
+    } else if (spiralContext.graphType === "paths") {
       
       var line = d3.svg.line()
           .interpolate("basis");
 
       svg.append("g")
-        .attr("transform", "translate(" + (this.margin.left) + "," + (this.margin.top) + ")");
+        .attr("transform", "translate(" + (spiralContext.margin.left) + "," + (spiralContext.margin.top) + ")");
 
       svg.selectAll("g").selectAll("path")
-          .data(quad(sample(line(this.data), this.numberOfPoints, this.period))) // ***** Need to figure out the proper precision to map data crrectly
+          .data(quad(sample(line(spiralContext.data), spiralContext.numberOfPoints, spiralContext.period))) // ***** Need to figure out the proper precision to map data crrectly
         .enter().append("path")
           .style("fill", function(d) { return "black"; })
           .style("stroke", function(d) { return "black"; })
@@ -141,11 +143,10 @@ function Spiral(graphType) {
         var u01d = Math.sqrt(u01x * u01x + u01y * u01y);
         return [u01x / u01d, u01y / u01d];
       }
-    } else if (this.graphType === "custom-path") {
+    } else if (spiralContext.graphType === "custom-path") {
       var pathWidth = 50;
-      var spiralContext = this;
-      
-      this.data.forEach(function(datum, t, dataSet){
+
+      spiralContext.data.forEach(function(datum, t, dataSet){
         var start = startAngle(t, spiralContext.period);
         var end = endAngle(t, spiralContext.period);
 
@@ -178,12 +179,12 @@ function Spiral(graphType) {
           .style("fill", function(d) { return "black"; })
           .style("opacity", function(d) {return d[2]/9})
           .attr("d", function(d) { return d[1]});
-    } else if (this.graphType === "non-spiral") {
+    } else if (spiralContext.graphType === "non-spiral") {
       // --------------------vvv Standard Line Graph vvv---------------------------
       var x2 = d3.scale.linear().range([0, 730]);
       var y2 = d3.scale.linear().range([480, 0]);
-      x2.domain(d3.extent(this.data, function(d) { return d[0]; }));
-      y2.domain(d3.extent(this.data, function(d) { return d[1]; }));
+      x2.domain(d3.extent(spiralContext.data, function(d) { return d[0]; }));
+      y2.domain(d3.extent(spiralContext.data, function(d) { return d[1]; }));
 
       var xAxis = d3.svg.axis().scale(x2)
         .orient("bottom").ticks(5);
@@ -198,7 +199,7 @@ function Spiral(graphType) {
       // Add the X Axis
       svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate("+this.margin.left+"," + 480 + ")")
+        .attr("transform", "translate("+spiralContext.margin.left+"," + 480 + ")")
         .call(xAxis)
         .append("text")
           .attr("x", 710)
@@ -210,7 +211,7 @@ function Spiral(graphType) {
       // Add the Y Axis
       svg.append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate("+this.margin.left+",0)")
+        .attr("transform", "translate("+spiralContext.margin.left+",0)")
         .call(yAxis)
         .append("text")
           .attr("transform", "rotate(-90)")
@@ -220,13 +221,13 @@ function Spiral(graphType) {
           .text("Signal (a.u.)");
 
       svg.append("path")
-        .datum(this.data)
+        .datum(spiralContext.data)
         .attr("class", "line")
         .attr("d", line)
         .attr("fill", "none")
         .attr("stroke-width", "1")
         .attr("stroke", "steelblue")
-        .attr("transform", "translate("+this.margin.left+",0)")
+        .attr("transform", "translate("+spiralContext.margin.left+",0)")
     }
   },
   this.randomData = function() {
