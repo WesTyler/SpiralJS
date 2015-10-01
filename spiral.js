@@ -11,12 +11,12 @@ function Spiral(graphType) {
   this.svgHeight = 0,
   this.svgWidth = 0,
   this.spacing = 1,
-  this.targetElement = "#chart",
+  this.targetElement = '#chart',
   this.width = this.svgWidth - this.margin.left - this.margin.right,
   this.height = this.svgHeight - this.margin.top - this.margin.bottom,
   this.data = [],
-  this.x = d3.scale.linear().range([0, 730]).domain([-740, 740]), // TODO : x.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
-  this.y = d3.scale.linear().range([480, 0]).domain([-490, 490]), // TODO : y.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
+  this.x = d3.scale.linear().range([0, 730]).domain([-750, 750]), // TODO : x.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
+  this.y = d3.scale.linear().range([480, 0]).domain([-500, 500]), // TODO : y.domain([-this.height-this.margin.bottom, this.height+this.margin.top]);
   this.cartesian = function(radius, angle, size, startAngle, endAngle) {
     var size = size || 1;
     var xPos = this.x(radius * Math.cos(angle));
@@ -230,6 +230,7 @@ function Spiral(graphType) {
     }
   },
   this.randomData = function() {
+    this.data = [];
     for (var i=0; i<this.numberOfPoints; i++){
       var angle = theta(i, this.period);
       var rad = radius(this.spacing, angle);
@@ -246,10 +247,13 @@ function Spiral(graphType) {
     }
   },
   this.setParam = function(param, value) {
-    this[param] = value;
+    var spiralContext = this;
+    spiralContext[param] = value;
     if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', , 'margin.left'].indexOf(param) > -1) {
-      this.width = this.svgWidth - this.margin.left - this.margin.right;
-      this.height = this.svgHeight - this.margin.top - this.margin.bottom;
+      spiralContext.width = spiralContext.svgWidth - spiralContext.margin.left - spiralContext.margin.right;
+      spiralContext.height = spiralContext.svgHeight - spiralContext.margin.top - spiralContext.margin.bottom;
+      spiralContext.x = d3.scale.linear().range([0, spiralContext.width]).domain([-spiralContext.svgWidth, spiralContext.svgWidth]);
+      spiralContext.y = d3.scale.linear().range([spiralContext.height, 0]).domain([-spiralContext.svgHeight, spiralContext.svgHeight]);
     }
   },
   this.redraw = function() {
