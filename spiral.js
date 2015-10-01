@@ -11,7 +11,7 @@ function Spiral(graphType) {
   this.svgHeight = 0,
   this.svgWidth = 0,
   this.spacing = 1,
-
+  this.lineWidth = 50,
   this.targetElement = '#chart',
   this.width = this.svgWidth - this.margin.left - this.margin.right,
   this.height = this.svgHeight - this.margin.top - this.margin.bottom,
@@ -144,21 +144,19 @@ function Spiral(graphType) {
         return [u01x / u01d, u01y / u01d];
       }
     } else if (spiralContext.graphType === "custom-path") {
-      var pathWidth = 50;
-
       spiralContext.data.forEach(function(datum, t, dataSet){
         var start = startAngle(t, spiralContext.period);
         var end = endAngle(t, spiralContext.period);
 
-        var startInnerRadius = radius(spiralContext.spacing, start) - pathWidth*0.5;
-        var startOuterRadius = radius(spiralContext.spacing, start) + pathWidth*0.5;
-        var endInnerRadius = radius(spiralContext.spacing, end) - pathWidth*0.5;
-        var endOuterRadius = radius(spiralContext.spacing, end) + pathWidth*0.5;
+        var startInnerRadius = radius(spiralContext.spacing, start) - spiralContext.lineWidth*0.5;
+        var startOuterRadius = radius(spiralContext.spacing, start) + spiralContext.lineWidth*0.5;
+        var endInnerRadius = radius(spiralContext.spacing, end) - spiralContext.lineWidth*0.5;
+        var endOuterRadius = radius(spiralContext.spacing, end) + spiralContext.lineWidth*0.5;
         
         var ctrlInnerRad = 0.01; // Use to adjust arc inner radius
         var ctrlOuterRad = 0.01; // Use to adjust arc outer radius
-        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) - pathWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.period));
-        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) + pathWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.period));
+        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) - spiralContext.lineWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.period));
+        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) + spiralContext.lineWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.period));
 
         var startPoint = spiralContext.cartesian(startInnerRadius, start); // Bottom right of arc
         var point2 = spiralContext.cartesian(startOuterRadius, start); // Top right of arc
@@ -301,9 +299,6 @@ spiral2.setParam('period', 100);
 spiral2.setParam('svgHeight', 500);
 spiral2.setParam('svgWidth', 750);
 spiral2.setParam('spacing', 8);
+spiral2.setParam('lineWidth', 30);
 spiral2.randomData();
 spiral2.render();
-
-// spiral('custom-path');
-//spiral('paths');
-//spiral('arcs');
