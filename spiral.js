@@ -299,6 +299,14 @@ spiral2.setParam('period', 100);
 spiral2.setParam('svgHeight', 500);
 spiral2.setParam('svgWidth', 750);
 spiral2.setParam('spacing', 8);
-spiral2.setParam('lineWidth', 30);
+spiral2.setParam('lineWidth', 50);
 spiral2.randomData();
 spiral2.render();
+
+var spiral3 = new Spiral('non-spiral')
+spiral3.setParam('numberOfPoints', 1000);
+spiral3.setParam('period', 100);
+spiral3.setParam('svgHeight', 500);
+spiral3.setParam('svgWidth', 750);
+spiral3.randomData();
+spiral3.render();
