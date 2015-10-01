@@ -11,7 +11,7 @@ function Spiral(graphType) {
   this.svgHeight = 0,
   this.svgWidth = 0,
   this.spacing = 1,
-  this.targetElement = "body",
+  this.targetElement = "#chart",
   this.width = this.svgWidth - this.margin.left - this.margin.right,
   this.height = this.svgHeight - this.margin.top - this.margin.bottom,
   this.data = [],
@@ -43,7 +43,6 @@ function Spiral(graphType) {
       var spiralContext = this;
       svg.append("g")
         .attr("transform", "translate(" + (spiralContext.width * 0.5 + spiralContext.margin.left) + "," + (spiralContext.height * 0.5 + spiralContext.margin.top) + ")");
-      console.log(spiralContext)
       svg.selectAll("g").selectAll("path")
         .data(spiralContext.data)
           .enter().append("path")
@@ -169,7 +168,6 @@ function Spiral(graphType) {
         arcPath += "L" + point4[0] + " " + point4[1];
         arcPath += "Q" + innerControlPoint[0] + " " + innerControlPoint[1] + " " + startPoint[0] + " " + startPoint[1] + "Z";
         datum[1] = arcPath
-        console.log(datum)
       });
 
       svg.append("g")
@@ -231,7 +229,7 @@ function Spiral(graphType) {
         .attr("transform", "translate("+this.margin.left+",0)")
     }
   },
-  this.randomData = function(){
+  this.randomData = function() {
     for (var i=0; i<this.numberOfPoints; i++){
       var angle = theta(i, this.period);
       var rad = radius(this.spacing, angle);
@@ -247,12 +245,20 @@ function Spiral(graphType) {
       }
     }
   },
-  this.setParam = function(param, value){
+  this.setParam = function(param, value) {
     this[param] = value;
     if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', , 'margin.left'].indexOf(param) > -1) {
       this.width = this.svgWidth - this.margin.left - this.margin.right;
       this.height = this.svgHeight - this.margin.top - this.margin.bottom;
     }
+  },
+  this.redraw = function() {
+    var spiralContext = this;
+    var graphContainer = document.getElementById(spiralContext.targetElement.substr(1));
+    while (graphContainer.firstChild) {
+      graphContainer.removeChild(graphContainer.firstChild)
+    }
+    spiralContext.render();
   }
 }
 
@@ -263,11 +269,11 @@ function theta(t, period) {
   return 2 * Math.PI / (period) * t;
 }
 
-function startAngle(t, period){
+function startAngle(t, period) {
   return (theta(t-1, period) + theta(t, period))/2;
 }
 
-function endAngle(t, period){
+function endAngle(t, period) {
   return (theta(t+1, period) + theta(t, period))/2;
 }
 
@@ -276,15 +282,15 @@ function radius(spacing, angle) {
 }
 
 var spiral1 = new Spiral('points');
-spiral1.numberOfPoints = 1000;
-spiral1.period = 100;
-spiral1.svgHeight = 500;
-spiral1.svgWidth = 750;
-spiral1.spacing = 8;
+spiral1.setParam('numberOfPoints', 1000);
+spiral1.setParam('period', 100);
+spiral1.setParam('svgHeight', 500);
+spiral1.setParam('svgWidth', 750);
+spiral1.setParam('spacing', 8);
 spiral1.randomData();
 spiral1.render();
 
-var spiral2 = new Spiral('arcs')
+var spiral2 = new Spiral('custom-path')
 spiral2.setParam('numberOfPoints', 1000);
 spiral2.setParam('period', 100);
 spiral2.setParam('svgHeight', 500);
