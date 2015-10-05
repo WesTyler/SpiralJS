@@ -1,7 +1,8 @@
 function Spiral(graphType) { 
   this.graphType = graphType || "points";
   this.numberOfPoints = null,
-  this.period = null, 
+  this.period = null,
+  this.tickMarkNumber = 0,
   this.margin = {
     top: 10,
     right: 10,
@@ -262,7 +263,8 @@ function Spiral(graphType) {
       graphContainer.removeChild(graphContainer.firstChild)
     }
     spiralContext.render();
-  }
+  },
+  this.autocorrelate = function() {}
 }
 
 
