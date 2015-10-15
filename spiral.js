@@ -43,18 +43,6 @@ function Spiral(graphType) {
             .attr("r", function(d) { return d[2]; })
             .attr("cx", function(d) { return d[0]; })
             .attr("cy", function(d) { return d[1]; });
-    } else if (spiralContext.graphType === "arcs") {
-      svg.append("g")
-        .attr("transform", "translate(" + (spiralContext.width * 0.5 + spiralContext.margin.left) + "," + (spiralContext.height * 0.5 + spiralContext.margin.top) + ")");
-      svg.selectAll("g").selectAll("path")
-        .data(spiralContext.data)
-          .enter().append("path")
-          .attr("d", d3.svg.arc()
-          .outerRadius(function(d){return spiralContext.y(d[3]+10)})
-          .innerRadius(function(d){return spiralContext.y(d[3]-10)})
-          .startAngle(function(d) { return d[5] > 0 ? d[5] : 0; })
-          .endAngle(function(d) { return d[6]; }))
-          .attr("opacity", function(d){return d[2]/5})
     } else if (spiralContext.graphType === "custom-path") {
       spiralContext.data.forEach(function(datum, t, dataSet){
         var start = startAngle(t, spiralContext.period);
