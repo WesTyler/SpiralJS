@@ -1,23 +1,22 @@
-function Spiral(graphType) { 
+function Spiral(graphType) {
   this.graphParams = {
     graphType: graphType || "points",
+    numberOfPoints: null,
+    period: null,
+    margin: {
+      top: 10,
+      right: 10,
+      bottom: 10,
+      left: 10
+    },
+    svgHeight: 0,
+    svgWidth: 0,
   },
-  this.numberOfPoints = null,
-  this.period = null,
-  this.tickMarkNumber = 0,
-  this.margin = {
-    top: 10,
-    right: 10,
-    bottom: 10,
-    left: 10
-  },
-  this.svgHeight = 0,
-  this.svgWidth = 0,
   this.spacing = 1,
   this.lineWidth = 50,
   this.targetElement = '#chart',
-  this.width = this.svgWidth - this.margin.left - this.margin.right,
-  this.height = this.svgHeight - this.margin.top - this.margin.bottom,
+  this.width = this.graphParams.svgWidth - this.graphParams.margin.left - this.graphParams.margin.right,
+  this.height = this.graphParams.svgHeight - this.graphParams.margin.top - this.graphParams.margin.bottom,
   this.data = [],
   this.x = d3.scale.linear().range([0, 730]).domain([-750, 750]),
   this.y = d3.scale.linear().range([480, 0]).domain([-500, 500]),
@@ -32,12 +31,12 @@ function Spiral(graphType) {
 
     var svg = d3.select(spiralContext.targetElement)
       .append("svg")
-      .attr("width", spiralContext.svgWidth)
-      .attr("height", spiralContext.svgHeight)
+      .attr("width", spiralContext.graphParams.svgWidth)
+      .attr("height", spiralContext.graphParams.svgHeight)
 
     if (spiralContext.graphParams.graphType === "points") {
       svg.append("g")
-        .attr("transform", "translate(" + spiralContext.margin.left + "," + spiralContext.margin.top + ")");
+        .attr("transform", "translate(" + spiralContext.graphParams.margin.left + "," + spiralContext.graphParams.margin.top + ")");
         
       svg.selectAll("g").selectAll("dot")
         .data(spiralContext.data)
@@ -47,8 +46,8 @@ function Spiral(graphType) {
             .attr("cy", function(d) { return d[1]; });
     } else if (spiralContext.graphParams.graphType === "custom-path") {
       spiralContext.data.forEach(function(datum, t, dataSet){
-        var start = startAngle(t, spiralContext.period);
-        var end = endAngle(t, spiralContext.period);
+        var start = startAngle(t, spiralContext.graphParams.period);
+        var end = endAngle(t, spiralContext.graphParams.period);
 
         var startInnerRadius = radius(spiralContext.spacing, start) - spiralContext.lineWidth*0.5;
         var startOuterRadius = radius(spiralContext.spacing, start) + spiralContext.lineWidth*0.5;
@@ -57,8 +56,8 @@ function Spiral(graphType) {
         
         var ctrlInnerRad = 0.01; // Use to adjust arc inner radius
         var ctrlOuterRad = 0.01; // Use to adjust arc outer radius
-        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) - spiralContext.lineWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.period));
-        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.period)) + spiralContext.lineWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.period));
+        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.graphParams.period)) - spiralContext.lineWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.graphParams.period));
+        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.graphParams.period)) + spiralContext.lineWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.graphParams.period));
 
         var startPoint = spiralContext.cartesian(startInnerRadius, start); // Bottom right of arc
         var point2 = spiralContext.cartesian(startOuterRadius, start); // Top right of arc
@@ -72,7 +71,7 @@ function Spiral(graphType) {
       });
 
       svg.append("g")
-        .attr("transform", "translate(" + spiralContext.margin.left + "," + spiralContext.margin.top + ")");
+        .attr("transform", "translate(" + spiralContext.graphParams.margin.left + "," + spiralContext.graphParams.margin.top + ")");
       svg.selectAll("g").selectAll("path")
         .data(spiralContext.data.slice(100))
         .enter().append("path")
@@ -99,7 +98,7 @@ function Spiral(graphType) {
       // Add the X Axis
       svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate("+spiralContext.margin.left+"," + 480 + ")")
+        .attr("transform", "translate("+spiralContext.graphParams.margin.left+"," + 480 + ")")
         .call(xAxis)
         .append("text")
           .attr("x", 710)
@@ -111,7 +110,7 @@ function Spiral(graphType) {
       // Add the Y Axis
       svg.append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate("+spiralContext.margin.left+",0)")
+        .attr("transform", "translate("+spiralContext.graphParams.margin.left+",0)")
         .call(yAxis)
         .append("text")
           .attr("transform", "rotate(-90)")
@@ -127,13 +126,13 @@ function Spiral(graphType) {
         .attr("fill", "none")
         .attr("stroke-width", "1")
         .attr("stroke", "steelblue")
-        .attr("transform", "translate("+spiralContext.margin.left+",0)")
+        .attr("transform", "translate("+spiralContext.graphParams.margin.left+",0)")
     }
   },
   this.randomData = function() {
     this.data = [];
-    for (var i=0; i<this.numberOfPoints; i++){
-      var angle = theta(i, this.period);
+    for (var i=0; i<this.graphParams.numberOfPoints; i++){
+      var angle = theta(i, this.graphParams.period);
       var rad = radius(this.spacing, angle);
       var size = 1 + Math.random()*1.5;
       if (i % 10 === 0) {
@@ -141,20 +140,24 @@ function Spiral(graphType) {
       }
 
       if (this.graphParams.graphType === 'non-spiral') {
-        this.data.push([i, size*this.period, 2])
+        this.data.push([i, size*this.graphParams.period, 2])
       } else {
-        this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
+        this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.graphParams.period), endAngle(i, this.graphParams.period)));
       }
     }
   },
   this.setParam = function(param, value) {
     var spiralContext = this;
-    spiralContext[param] = value;
-    if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', , 'margin.left'].indexOf(param) > -1) {
-      spiralContext.width = spiralContext.svgWidth - spiralContext.margin.left - spiralContext.margin.right;
-      spiralContext.height = spiralContext.svgHeight - spiralContext.margin.top - spiralContext.margin.bottom;
-      spiralContext.x = d3.scale.linear().range([0, spiralContext.width]).domain([-spiralContext.svgWidth, spiralContext.svgWidth]);
-      spiralContext.y = d3.scale.linear().range([spiralContext.height, 0]).domain([-spiralContext.svgHeight, spiralContext.svgHeight]);
+    if (['svgHeight', 'svgWidth', 'numberOfPoints', 'period', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1)  {
+      spiralContext.graphParams[param] = value;
+    } else {
+      spiralContext[param] = value;
+    }
+    if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1) {
+      spiralContext.width = spiralContext.graphParams.svgWidth - spiralContext.graphParams.margin.left - spiralContext.graphParams.margin.right;
+      spiralContext.height = spiralContext.graphParams.svgHeight - spiralContext.graphParams.margin.top - spiralContext.graphParams.margin.bottom;
+      spiralContext.x = d3.scale.linear().range([0, spiralContext.width]).domain([-spiralContext.graphParams.svgWidth, spiralContext.graphParams.svgWidth]);
+      spiralContext.y = d3.scale.linear().range([spiralContext.height, 0]).domain([-spiralContext.graphParams.svgHeight, spiralContext.graphParams.svgHeight]);
     }
   },
   this.redraw = function() {
