@@ -1,0 +1,29 @@
+{
+  "name": "spiraljs",
+  "version": "1.0.0",
+  "description": "Create spiral graphs of time-series data using D3.js",
+  "main": "spiral.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WesTyler/SpiralJS.git"
+  },
+  "keywords": [
+    "d3",
+    "data",
+    "visualization",
+    "spiral",
+    "graph"
+  ],
+  "author": "Wes Tyler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WesTyler/SpiralJS/issues"
+  },
+  "homepage": "https://github.com/WesTyler/SpiralJS#readme",
+  "dependencies": {
+    "d3": "^3.5.6"
+  }
+}
