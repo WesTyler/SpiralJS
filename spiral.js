@@ -1,5 +1,7 @@
 function Spiral(graphType) { 
-  this.graphType = graphType || "points";
+  this.graphParams = {
+    graphType: graphType || "points",
+  },
   this.numberOfPoints = null,
   this.period = null,
   this.tickMarkNumber = 0,
@@ -33,7 +35,7 @@ function Spiral(graphType) {
       .attr("width", spiralContext.svgWidth)
       .attr("height", spiralContext.svgHeight)
 
-    if (spiralContext.graphType === "points") {
+    if (spiralContext.graphParams.graphType === "points") {
       svg.append("g")
         .attr("transform", "translate(" + spiralContext.margin.left + "," + spiralContext.margin.top + ")");
         
@@ -43,7 +45,7 @@ function Spiral(graphType) {
             .attr("r", function(d) { return d[2]; })
             .attr("cx", function(d) { return d[0]; })
             .attr("cy", function(d) { return d[1]; });
-    } else if (spiralContext.graphType === "custom-path") {
+    } else if (spiralContext.graphParams.graphType === "custom-path") {
       spiralContext.data.forEach(function(datum, t, dataSet){
         var start = startAngle(t, spiralContext.period);
         var end = endAngle(t, spiralContext.period);
@@ -77,7 +79,7 @@ function Spiral(graphType) {
           .style("fill", function(d) { return "black"; })
           .style("opacity", function(d) {return d[2]/9})
           .attr("d", function(d) { return d[1]});
-    } else if (spiralContext.graphType === "non-spiral") {
+    } else if (spiralContext.graphParams.graphType === "non-spiral") {
       // --------------------vvv Standard Line Graph vvv---------------------------
       var x2 = d3.scale.linear().range([0, 730]);
       var y2 = d3.scale.linear().range([480, 0]);
@@ -138,7 +140,7 @@ function Spiral(graphType) {
         size = 5.5 + Math.random()*3;
       }
 
-      if (this.graphType === 'non-spiral') {
+      if (this.graphParams.graphType === 'non-spiral') {
         this.data.push([i, size*this.period, 2])
       } else {
         this.data.push(this.cartesian(rad, angle, size, startAngle(i, this.period), endAngle(i, this.period)));
@@ -165,7 +167,6 @@ function Spiral(graphType) {
   },
   this.autocorrelate = function() {}
 }
-
 
 // For time point #t, calculate the angle to the center of the arc
 // period is the number of time points per revolution (2 PI)
