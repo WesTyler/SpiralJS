@@ -167,7 +167,8 @@ function Spiral(graphType) {
       graphContainer.removeChild(graphContainer.firstChild)
     }
     spiralContext.render();
-  }
+  },
+  this.autocorrelate = function() {}
 }
 
 // For time point #t, calculate the angle to the center of the arc
