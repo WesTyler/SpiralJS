@@ -11,12 +11,10 @@ function Spiral(graphType) {
     },
     svgHeight: 0,
     svgWidth: 0,
+    spacing: 1,
+    lineWidth: 50,
+    targetElement: '#chart',
   },
-  this.spacing = 1,
-  this.lineWidth = 50,
-  this.targetElement = '#chart',
-  this.width = this.graphParams.svgWidth - this.graphParams.margin.left - this.graphParams.margin.right,
-  this.height = this.graphParams.svgHeight - this.graphParams.margin.top - this.graphParams.margin.bottom,
   this.data = [],
   this.x = d3.scale.linear().range([0, 730]).domain([-750, 750]),
   this.y = d3.scale.linear().range([480, 0]).domain([-500, 500]),
@@ -29,7 +27,7 @@ function Spiral(graphType) {
   this.render = function() {
     var spiralContext = this;
 
-    var svg = d3.select(spiralContext.targetElement)
+    var svg = d3.select(spiralContext.graphParams.targetElement)
       .append("svg")
       .attr("width", spiralContext.graphParams.svgWidth)
       .attr("height", spiralContext.graphParams.svgHeight)
@@ -49,15 +47,15 @@ function Spiral(graphType) {
         var start = startAngle(t, spiralContext.graphParams.period);
         var end = endAngle(t, spiralContext.graphParams.period);
 
-        var startInnerRadius = radius(spiralContext.spacing, start) - spiralContext.lineWidth*0.5;
-        var startOuterRadius = radius(spiralContext.spacing, start) + spiralContext.lineWidth*0.5;
-        var endInnerRadius = radius(spiralContext.spacing, end) - spiralContext.lineWidth*0.5;
-        var endOuterRadius = radius(spiralContext.spacing, end) + spiralContext.lineWidth*0.5;
+        var startInnerRadius = radius(spiralContext.graphParams.spacing, start) - spiralContext.graphParams.lineWidth*0.5;
+        var startOuterRadius = radius(spiralContext.graphParams.spacing, start) + spiralContext.graphParams.lineWidth*0.5;
+        var endInnerRadius = radius(spiralContext.graphParams.spacing, end) - spiralContext.graphParams.lineWidth*0.5;
+        var endOuterRadius = radius(spiralContext.graphParams.spacing, end) + spiralContext.graphParams.lineWidth*0.5;
         
         var ctrlInnerRad = 0.01; // Use to adjust arc inner radius
         var ctrlOuterRad = 0.01; // Use to adjust arc outer radius
-        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.graphParams.period)) - spiralContext.lineWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.graphParams.period));
-        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.spacing, theta(t, spiralContext.graphParams.period)) + spiralContext.lineWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.graphParams.period));
+        var innerControlPoint = spiralContext.cartesian(radius(spiralContext.graphParams.spacing, theta(t, spiralContext.graphParams.period)) - spiralContext.graphParams.lineWidth*0.5 + ctrlInnerRad, theta(t, spiralContext.graphParams.period));
+        var outerControlPoint = spiralContext.cartesian(radius(spiralContext.graphParams.spacing, theta(t, spiralContext.graphParams.period)) + spiralContext.graphParams.lineWidth*0.5 + ctrlOuterRad, theta(t, spiralContext.graphParams.period));
 
         var startPoint = spiralContext.cartesian(startInnerRadius, start); // Bottom right of arc
         var point2 = spiralContext.cartesian(startOuterRadius, start); // Top right of arc
@@ -133,7 +131,7 @@ function Spiral(graphType) {
     this.data = [];
     for (var i=0; i<this.graphParams.numberOfPoints; i++){
       var angle = theta(i, this.graphParams.period);
-      var rad = radius(this.spacing, angle);
+      var rad = radius(this.graphParams.spacing, angle);
       var size = 1 + Math.random()*1.5;
       if (i % 10 === 0) {
         size = 5.5 + Math.random()*3;
@@ -148,21 +146,21 @@ function Spiral(graphType) {
   },
   this.setParam = function(param, value) {
     var spiralContext = this;
-    if (['svgHeight', 'svgWidth', 'numberOfPoints', 'period', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1)  {
+    if (['targetElement', 'lineWidth', 'spacing', 'svgHeight', 'svgWidth', 'numberOfPoints', 'period', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1)  {
       spiralContext.graphParams[param] = value;
     } else {
       spiralContext[param] = value;
     }
     if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1) {
-      spiralContext.width = spiralContext.graphParams.svgWidth - spiralContext.graphParams.margin.left - spiralContext.graphParams.margin.right;
-      spiralContext.height = spiralContext.graphParams.svgHeight - spiralContext.graphParams.margin.top - spiralContext.graphParams.margin.bottom;
-      spiralContext.x = d3.scale.linear().range([0, spiralContext.width]).domain([-spiralContext.graphParams.svgWidth, spiralContext.graphParams.svgWidth]);
-      spiralContext.y = d3.scale.linear().range([spiralContext.height, 0]).domain([-spiralContext.graphParams.svgHeight, spiralContext.graphParams.svgHeight]);
+      var width = spiralContext.graphParams.svgWidth - spiralContext.graphParams.margin.left - spiralContext.graphParams.margin.right;
+      var height = spiralContext.graphParams.svgHeight - spiralContext.graphParams.margin.top - spiralContext.graphParams.margin.bottom;
+      spiralContext.x = d3.scale.linear().range([0, width]).domain([-spiralContext.graphParams.svgWidth, spiralContext.graphParams.svgWidth]);
+      spiralContext.y = d3.scale.linear().range([height, 0]).domain([-spiralContext.graphParams.svgHeight, spiralContext.graphParams.svgHeight]);
     }
   },
   this.redraw = function() {
     var spiralContext = this;
-    var graphContainer = document.getElementById(spiralContext.targetElement.substr(1));
+    var graphContainer = document.getElementById(spiralContext.graphParams.targetElement.substr(1));
     while (graphContainer.firstChild) {
       graphContainer.removeChild(graphContainer.firstChild)
     }
