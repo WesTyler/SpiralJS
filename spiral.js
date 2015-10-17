@@ -180,18 +180,19 @@ Spiral.prototype.redraw = function() {
 },
 Spiral.prototype.autocorrelate = function() {
   var n = this.option.numberOfPoints;
+  var index = this.option.graphType === 'non-spiral' ? 1 : 2;
 
   var sum = 0;
   for (var i=0; i<n; i++) {
-    sum += this.option.data[i][2];
+    sum += this.option.data[i][index];
   }
   var avg = sum/n;
 
-
   var sigma2 = 0;
   for (var j=0; j < n; j++) {
-    sigma2 += Math.pow((this.option.data[j][2] - avg),2);
+    sigma2 += Math.pow((this.option.data[j][index] - avg),2);
   }
+  console.log(n, avg, sigma2)
 
   var coeff;
   var coeffArray = [];
@@ -199,7 +200,7 @@ Spiral.prototype.autocorrelate = function() {
   for (var tau=0; tau < n; tau++) {
     var sigma1 = 0;
     for (var j=0; j < n-tau; j++) {
-      sigma1 += (this.option.data[j][2] - avg) * (this.option.data[j+tau][2] - avg);
+      sigma1 += (this.option.data[j][index] - avg) * (this.option.data[j+tau][index] - avg);
     }
 
     coeff = sigma1 / sigma2;

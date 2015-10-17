@@ -43,5 +43,13 @@
     spiral3.setParam('svgWidth', 750);
     spiral3.randomData();
     spiral3.render();
+
+    var autocorrelateGraph = new Spiral('non-spiral')
+    autocorrelateGraph.setParam('numberOfPoints', 1000);
+    autocorrelateGraph.setParam('data', spiral3.autocorrelate());
+    autocorrelateGraph.setParam('svgHeight', 500);
+    autocorrelateGraph.setParam('svgWidth', 750);
+    autocorrelateGraph.render();
+
   </script>
 </body>
