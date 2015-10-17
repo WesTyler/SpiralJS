@@ -7,7 +7,7 @@ function Spiral(graphType) {
       top: 10,
       right: 10,
       bottom: 10,
-      left: 10
+      left: 30
     },
     svgHeight: 0,
     svgWidth: 0,
@@ -178,7 +178,36 @@ Spiral.prototype.redraw = function() {
   }
   classObj.render();
 },
-Spiral.prototype.autocorrelate = function() {}
+Spiral.prototype.autocorrelate = function() {
+  var n = this.option.numberOfPoints;
+
+  var sum = 0;
+  for (var i=0; i<n; i++) {
+    sum += this.option.data[i][2];
+  }
+  var avg = sum/n;
+
+
+  var sigma2 = 0;
+  for (var j=0; j < n; j++) {
+    sigma2 += Math.pow((this.option.data[j][2] - avg),2);
+  }
+
+  var coeff;
+  var coeffArray = [];
+
+  for (var tau=0; tau < n; tau++) {
+    var sigma1 = 0;
+    for (var j=0; j < n-tau; j++) {
+      sigma1 += (this.option.data[j][2] - avg) * (this.option.data[j+tau][2] - avg);
+    }
+
+    coeff = sigma1 / sigma2;
+    coeffArray.push([tau, coeff]);
+  }
+
+  return coeffArray;
+}
 
 function theta(t, period) {
   return 2 * Math.PI / (period) * t;
