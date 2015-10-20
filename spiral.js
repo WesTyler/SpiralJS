@@ -18,7 +18,8 @@ function Spiral(graphType) {
     x: d3.scale.linear().range([0, 730]).domain([-750, 750]),
     y: d3.scale.linear().range([480, 0]).domain([-500, 500]),
     tickMarkNumber: [],
-    tickMarkLabels: []
+    tickMarkLabels: [],
+    color: 'black'
   }
 }; 
 
@@ -85,7 +86,7 @@ Spiral.prototype.render = function() {
     svg.selectAll("g").selectAll("path")
       .data(option.data.slice(100))
       .enter().append("path")
-        .style("fill", function(d) { return "black"; })
+        .style("fill", function(d) { return option.color; })
         .style("opacity", function(d) {return d[2]/9})
         .attr("d", function(d) { return d[1]});
   } else if (option.graphType === "non-spiral") {
@@ -133,7 +134,7 @@ Spiral.prototype.render = function() {
       .attr("d", line)
       .attr("fill", "none")
       .attr("stroke-width", "1")
-      .attr("stroke", "steelblue")
+      .attr("stroke", option.color)
       .attr("transform", "translate("+option.margin.left+",0)")
   }
 },
