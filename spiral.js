@@ -19,7 +19,8 @@ function Spiral(graphType) {
     y: d3.scale.linear().range([480, 0]).domain([-500, 500]),
     tickMarkNumber: [],
     tickMarkLabels: [],
-    color: 'black'
+    color: 'black',
+    colorMode: 'opacity'
   }
 }; 
 
@@ -86,8 +87,8 @@ Spiral.prototype.render = function() {
     svg.selectAll("g").selectAll("path")
       .data(option.data.slice(100))
       .enter().append("path")
-        .style("fill", function(d) { return option.color; })
-        .style("opacity", function(d) {return d[2]/9})
+        .style("fill", function(d) { return colorSelector(d); })
+        .style("opacity", function(d) {return colorSelector(d[2]/9, true)})
         .attr("d", function(d) { return d[1]});
   } else if (option.graphType === "non-spiral") {
     // --------------------vvv Standard Line Graph vvv---------------------------
@@ -227,4 +228,12 @@ function endAngle(t, period) {
 
 function radius(spacing, angle) {
   return spacing * angle;
+}
+
+function colorSelector(datum, opacityFlag) {
+  if (opacityFlag) {
+    return datum[2]/9;
+  } else {
+    //d3 color scale
+  }
 }
