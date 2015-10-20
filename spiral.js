@@ -88,7 +88,7 @@ Spiral.prototype.render = function() {
       .data(option.data.slice(100))
       .enter().append("path")
         .style("fill", function(d) { return colorSelector(d); })
-        .style("opacity", function(d) {return colorSelector(d[2]/9, true)})
+        .style("opacity", function(d) {return colorSelector(d, true)})
         .attr("d", function(d) { return d[1]});
   } else if (option.graphType === "non-spiral") {
     // --------------------vvv Standard Line Graph vvv---------------------------
