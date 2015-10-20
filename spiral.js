@@ -17,6 +17,8 @@ function Spiral(graphType) {
     data: [],
     x: d3.scale.linear().range([0, 730]).domain([-750, 750]),
     y: d3.scale.linear().range([480, 0]).domain([-500, 500]),
+    tickMarkNumber: [],
+    tickMarkLabels: []
   }
 }; 
 
@@ -143,9 +145,9 @@ Spiral.prototype.randomData = function() {
   for (var i=0; i<option.numberOfPoints; i++){
     var angle = theta(i, option.period);
     var rad = radius(option.spacing, angle);
-    var size = 1 + Math.random()*1;
+    var size = 1 + Math.random()*1.5;
     if (i % 10 === 0) {
-      size = 1.2 + Math.random()*1.5;
+      size = 3 + Math.random()*3;
     }
 
     if (option.graphType === 'non-spiral') {
