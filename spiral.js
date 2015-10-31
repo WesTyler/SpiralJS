@@ -225,6 +225,8 @@ Spiral.prototype.findPeriod = function() {
   var coeffArray = this.autocorrelate();
   var tauArray = [];
   var potentialPeriods = {};
+  var periodOccurance = 1;
+  var foundPeriod = 1;
 
   for (var i = 0; i < coeffArray.length; i++) {
     averageCoeff += coeffArray[i][1];
@@ -234,10 +236,10 @@ Spiral.prototype.findPeriod = function() {
   for (var i = 0; i < coeffArray.length; i++) {
     coeffDiffSum += Math.pow((coeffArray[i][1] - averageCoeff), 2);
   };
-  coeffStdDev = coeffDiffSum / coeffArray.length;
+  coeffStdDev = Math.sqrt(coeffDiffSum / coeffArray.length);
 
   for (var i = 0; i < coeffArray.length / 2; i++) {
-    if(coeffArray[i][1] >= averageCoeff + 20 * coeffStdDev) {
+    if(coeffArray[i][1] >= averageCoeff + 3*coeffStdDev) {
       tauArray.push(coeffArray[i][0]);
     };
   };
@@ -246,8 +248,21 @@ Spiral.prototype.findPeriod = function() {
     var diff = tauArray[i] - tauArray[i-1];
     potentialPeriods[diff] = potentialPeriods[diff] ? potentialPeriods[diff]+1 : 1;
   };
-  console.log('*** findPeriod tauArray ***', potentialPeriods)
 
+  Object.keys(potentialPeriods).forEach(function(potentialPeriod) {
+    if(potentialPeriods[potentialPeriod] > periodOccurance) {
+      periodOccurance = potentialPeriods[potentialPeriod];
+      foundPeriod = potentialPeriod;
+    }
+  });
+
+  console.log('*** average ***', averageCoeff)
+  console.log('*** stdDev ***', coeffStdDev)
+  console.log('*** cutoff ***', averageCoeff + 3*coeffStdDev)
+  console.log('*** Period ***', foundPeriod)
+
+  this.setParam('period', Number(foundPeriod));
+  this.redraw();
 };
 
 function theta(t, period) {
