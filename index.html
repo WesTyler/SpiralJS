@@ -27,14 +27,15 @@
     spiral1.render();
 
     var spiral2 = new Spiral('custom-path')
-    spiral2.setParam('numberOfPoints', 1000);
+    spiral2.setParam('numberOfPoints', 500);
     spiral2.setParam('period', 100);
     spiral2.setParam('svgHeight', 500);
     spiral2.setParam('svgWidth', 750);
-    spiral2.setParam('spacing', 8);
-    spiral2.setParam('lineWidth', 30);
+    spiral2.setParam('spacing', 1.5);
+    spiral2.setParam('lineWidth', 7.5);
     spiral2.randomData();
     spiral2.render();
+    spiral2.findPeriod();
 
     var spiral3 = new Spiral('non-spiral')
     spiral3.setParam('numberOfPoints', 1000);
@@ -43,7 +44,6 @@
     spiral3.setParam('svgWidth', 750);
     spiral3.randomData();
     spiral3.render();
-    spiral3.findPeriod();
 
     var autocorrelateGraph = new Spiral('non-spiral')
     autocorrelateGraph.setParam('numberOfPoints', 1000);

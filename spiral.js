@@ -256,11 +256,6 @@ Spiral.prototype.findPeriod = function() {
     }
   });
 
-  console.log('*** average ***', averageCoeff)
-  console.log('*** stdDev ***', coeffStdDev)
-  console.log('*** cutoff ***', averageCoeff + 3*coeffStdDev)
-  console.log('*** Period ***', foundPeriod)
-
   this.setParam('period', Number(foundPeriod));
   this.redraw();
 };
