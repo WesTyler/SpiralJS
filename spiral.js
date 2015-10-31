@@ -32,7 +32,8 @@ Spiral.prototype.cartesian = function(radius, angle, size) {
   var xPos = option.x(radius * Math.cos(angle));
   var yPos = option.y(radius * Math.sin(angle));
   return [xPos, yPos, size];
-},
+};
+
 Spiral.prototype.render = function() {
   var classObj = this;
   var option = classObj.option;
@@ -138,7 +139,8 @@ Spiral.prototype.render = function() {
       .attr("stroke", option.color)
       .attr("transform", "translate("+option.margin.left+",0)")
   }
-},
+};
+
 Spiral.prototype.randomData = function() {
   var classObj = this;
   var option = classObj.option;
@@ -149,7 +151,7 @@ Spiral.prototype.randomData = function() {
     var rad = radius(option.spacing, angle);
     var size = 1 + Math.random()*1.5;
     if (i % 10 === 0) {
-      size = 3 + Math.random()*3;
+      size = 1.5 + Math.random()*3;
     }
 
     if (option.graphType === 'non-spiral') {
@@ -158,7 +160,8 @@ Spiral.prototype.randomData = function() {
       option.data.push(this.cartesian(rad, angle, size));
     }
   }
-},
+};
+
 Spiral.prototype.setParam = function(param, value) {
   var classObj = this;
   var option = classObj.option;
@@ -171,7 +174,8 @@ Spiral.prototype.setParam = function(param, value) {
     option.x = d3.scale.linear().range([0, width]).domain([-option.svgWidth, option.svgWidth]);
     option.y = d3.scale.linear().range([height, 0]).domain([-option.svgHeight, option.svgHeight]);
   }
-},
+};
+
 Spiral.prototype.redraw = function() {
   var classObj = this;
   var option = classObj.option;
@@ -181,7 +185,8 @@ Spiral.prototype.redraw = function() {
     graphContainer.removeChild(graphContainer.firstChild)
   }
   classObj.render();
-},
+};
+
 Spiral.prototype.autocorrelate = function() {
   var n = this.option.numberOfPoints;
   var index = this.option.graphType === 'non-spiral' ? 1 : 2;
@@ -196,7 +201,6 @@ Spiral.prototype.autocorrelate = function() {
   for (var j=0; j < n; j++) {
     sigma2 += Math.pow((this.option.data[j][index] - avg),2);
   }
-  console.log(n, avg, sigma2)
 
   var coeff;
   var coeffArray = [];
@@ -212,19 +216,61 @@ Spiral.prototype.autocorrelate = function() {
   }
 
   return coeffArray;
-}
+};
+
+Spiral.prototype.findPeriod = function() {
+  var averageCoeff = 0;
+  var coeffStdDev = 0;
+  var coeffDiffSum = 0;
+  var coeffArray = this.autocorrelate();
+  var tauArray = [];
+  var potentialPeriods = {};
+  var periodOccurance = 1;
+  var foundPeriod = 1;
+
+  for (var i = 0; i < coeffArray.length; i++) {
+    averageCoeff += coeffArray[i][1];
+  };
+  averageCoeff = averageCoeff / coeffArray.length;
+
+  for (var i = 0; i < coeffArray.length; i++) {
+    coeffDiffSum += Math.pow((coeffArray[i][1] - averageCoeff), 2);
+  };
+  coeffStdDev = Math.sqrt(coeffDiffSum / coeffArray.length);
+
+  for (var i = 0; i < coeffArray.length / 2; i++) {
+    if(coeffArray[i][1] >= averageCoeff + 3*coeffStdDev) {
+      tauArray.push(coeffArray[i][0]);
+    };
+  };
+
+  for (var i = 0; i < tauArray.length; i++) {
+    var diff = tauArray[i] - tauArray[i-1];
+    potentialPeriods[diff] = potentialPeriods[diff] ? potentialPeriods[diff]+1 : 1;
+  };
+
+  Object.keys(potentialPeriods).forEach(function(potentialPeriod) {
+    if(potentialPeriods[potentialPeriod] > periodOccurance) {
+      periodOccurance = potentialPeriods[potentialPeriod];
+      foundPeriod = potentialPeriod;
+    }
+  });
+
+  this.setParam('period', Number(foundPeriod));
+  this.redraw();
+};
 
 function theta(t, period) {
   return 2 * Math.PI / (period) * t;
-}
+};
 
 function startAngle(t, period) {
   return (theta(t-1, period) + theta(t, period))/2;
-}
+};
 
 function endAngle(t, period) {
   return (theta(t+1, period) + theta(t, period))/2;
-}
+};
 
 function radius(spacing, angle) {
   return spacing * angle;
