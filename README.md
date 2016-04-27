@@ -86,7 +86,7 @@ lineWidth // integer width of svg line for 'custom-path' graphs - defaults to 50
 
 targetElement // CSS selector for target DOM element for appending SVG 
 
-data: // Array containing data in the form [[time1, signal1], ..., [timeN, signalN]]
+data: // Array containing data in the form [[x1, y1], ..., [xN, yN]]
 
 x: d3.scale.linear().range([0, 730]).domain([-750, 750]),
 
