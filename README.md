@@ -15,7 +15,7 @@ Periodicity of the data is more readily apparent in Spiral plot, with smaller sc
 
 ## Using SpiralJS
 
-### Installation
+### Installation (COMING SOON! v1.0.0 has NOT yet been published)
 npm install spiraljs
 
 bower install spiraljs
