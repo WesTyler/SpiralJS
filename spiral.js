@@ -1,3 +1,5 @@
+var d3 = require('d3');
+
 function Spiral(graphType) {
   this.option = {
     graphType: graphType || "points",
@@ -22,7 +24,7 @@ function Spiral(graphType) {
     color: 'black',
     colorMode: 'opacity'
   }
-}; 
+};
 
 Spiral.prototype.cartesian = function(radius, angle, size) {
   var classObj = this;
@@ -46,7 +48,7 @@ Spiral.prototype.render = function() {
   if (option.graphType === "points") {
     svg.append("g")
       .attr("transform", "translate(" + option.margin.left + "," + option.margin.top + ")");
-      
+
     svg.selectAll("g").selectAll("dot")
       .data(option.data)
         .enter().append("circle")
@@ -64,7 +66,7 @@ Spiral.prototype.render = function() {
       var startOuterRadius = startCenter + option.lineWidth*0.5;
       var endInnerRadius = endCenter - option.lineWidth*0.5;
       var endOuterRadius = endCenter + option.lineWidth*0.5;
-      
+
       var ctrlInnerRad = 0.01;
       var ctrlOuterRad = 0.01;
       var angle = theta(t, option.period);
@@ -262,15 +264,15 @@ Spiral.prototype.findPeriod = function() {
 
 function theta(t, period) {
   return 2 * Math.PI / (period) * t;
-};
+}
 
 function startAngle(t, period) {
   return (theta(t-1, period) + theta(t, period))/2;
-};
+}
 
 function endAngle(t, period) {
   return (theta(t+1, period) + theta(t, period))/2;
-};
+}
 
 function radius(spacing, angle) {
   return spacing * angle;
@@ -283,3 +285,5 @@ function colorSelector(datum, opacityFlag) {
     //d3 color scale
   }
 }
+
+module.exports = Spiral;
