@@ -165,17 +165,30 @@ Spiral.prototype.randomData = function() {
 };
 
 Spiral.prototype.setParam = function(param, value) {
-  var classObj = this;
-  var option = classObj.option;
+    var classObj = this,
+        option = classObj.option,
+        parsedParam = param.split('.');
 
-  option[param] = value;
+    if (parsedParam.length === 2) {
+        if (!(option.hasOwnProperty(parsedParam[0])) || !(option[parsedParam[0]].hasOwnProperty(parsedParam[1]))) {
+            throw new Error(param + ' is not a valid parameter.');
+        } else {
+            option[parsedParam[0]][parsedParam[1]] = value;
+        }
+    } else {
+        if (!(option.hasOwnProperty(param)) && !(option.hasOwnProperty(param.split('.')[0]))) {
+            throw new Error(param + ' is not a valid parameter.');
+        } else {
+            option[param] = value;
+        }
+    }
 
-  if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1) {
-    var width = option.svgWidth - option.margin.left - option.margin.right;
-    var height = option.svgHeight - option.margin.top - option.margin.bottom;
-    option.x = d3.scale.linear().range([0, width]).domain([-option.svgWidth, option.svgWidth]);
-    option.y = d3.scale.linear().range([height, 0]).domain([-option.svgHeight, option.svgHeight]);
-  }
+    if (['svgHeight', 'svgWidth', 'margin.top', 'margin.right', 'margin.bottom', 'margin.left'].indexOf(param) > -1) {
+        var width = option.svgWidth - option.margin.left - option.margin.right;
+        var height = option.svgHeight - option.margin.top - option.margin.bottom;
+        option.x = d3.scale.linear().range([0, width]).domain([-option.svgWidth, option.svgWidth]);
+        option.y = d3.scale.linear().range([height, 0]).domain([-option.svgHeight, option.svgHeight]);
+    }
 };
 
 Spiral.prototype.redraw = function() {
